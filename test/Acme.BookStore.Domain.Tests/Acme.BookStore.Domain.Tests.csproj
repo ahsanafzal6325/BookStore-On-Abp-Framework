@@ -9,6 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\src\Acme.BookStore.Application.Contracts\Acme.BookStore.Application.Contracts.csproj" />
     <ProjectReference Include="..\Acme.BookStore.EntityFrameworkCore.Tests\Acme.BookStore.EntityFrameworkCore.Tests.csproj" />
   </ItemGroup>
 

@@ -19,6 +19,7 @@ $(function () {
                             [
                                 {
                                     text: l('Edit'),
+                                    visible: abp.auth.isGranted('BookStore.Books.Edit'), //CHECK for the PERMISSION
                                     action: function (data) {
                                         editModal.open({ id: data.record.id });
                                     }
@@ -68,6 +69,7 @@ $(function () {
         })
     );
 
+    
     createModal.onResult(function () {
         dataTable.ajax.reload();
     });
@@ -80,4 +82,6 @@ $(function () {
         e.preventDefault();
         createModal.open();
     });
+
+   
 });
