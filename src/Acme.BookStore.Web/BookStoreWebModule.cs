@@ -39,6 +39,7 @@ using Volo.Abp.UI.Navigation;
 using Volo.Abp.VirtualFileSystem;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Acme.BookStore.Permissions;
+using Volo.Abp.Caching.StackExchangeRedis;
 
 namespace Acme.BookStore.Web;
 
@@ -55,7 +56,8 @@ namespace Acme.BookStore.Web;
     typeof(AbpAspNetCoreSerilogModule),
     typeof(AbpSwashbuckleModule)
     )]
-public class BookStoreWebModule : AbpModule
+[DependsOn(typeof(AbpCachingStackExchangeRedisModule))]
+    public class BookStoreWebModule : AbpModule
 {
     public override void PreConfigureServices(ServiceConfigurationContext context)
     {

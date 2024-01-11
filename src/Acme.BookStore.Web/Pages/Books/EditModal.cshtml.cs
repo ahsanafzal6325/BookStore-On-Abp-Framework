@@ -1,11 +1,16 @@
 using Acme.BookStore.Books;
+using Acme.BookStore.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Caching.Distributed;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
+using Volo.Abp.Application.Dtos;
 using Volo.Abp.Caching;
 using Volo.Abp.Domain.Entities.Caching;
+using Volo.Abp.EntityFrameworkCore;
 
 namespace Acme.BookStore.Web.Pages.Books
 {
@@ -17,7 +22,7 @@ namespace Acme.BookStore.Web.Pages.Books
 
         [BindProperty]
         public CreateUpdateBookDto Book { get; set; }
-
+        public BookDto getBook { get; set; }
         private readonly IBookAppService _bookAppService;
 
         private readonly IEntityCache<BookDto, Guid> _bookCache;
@@ -28,7 +33,6 @@ namespace Acme.BookStore.Web.Pages.Books
             _bookCache = bookCache;
             _cache = cache;
         }
-
         public async Task OnGetAsync()
         {
             //var bookDto = await _bookAppService.GetAsync(Id);
@@ -37,6 +41,24 @@ namespace Acme.BookStore.Web.Pages.Books
             //var chache = await _bookCache.GetAsync(Id);
             Book = ObjectMapper.Map<BookDto, CreateUpdateBookDto>(book);
         }
+        //public async Task AddAllCache(BookDto books)
+        //{
+        //    var IdsList = new List<Guid>();
+        //    var getBoks = await _bookAppService.GetListAsync(new PagedAndSortedResultRequestDto { SkipCount = 0, MaxResultCount = 20 });
+
+        //    foreach (var item in getBoks.Items)
+        //    {
+        //        IdsList.Add(item.Id);
+        //    }
+        //    List<string> stringIdsList = IdsList.Select(id => id.ToString()).ToList();
+        //    var res = await _cache.GetOrAddManyAsync(
+        //        stringIdsList, //Cache key
+        //        async () => await GetBookFromDatabaseAsync(bookId),
+        //        () => new DistributedCacheEntryOptions
+        //        {
+        //            AbsoluteExpiration = DateTimeOffset.Now.AddMinutes(1)
+        //        };
+        //}
         public async Task<BookCacheItem> GetAsync(Guid bookId)
         {
             return await _cache.GetOrAddAsync(
@@ -44,7 +66,7 @@ namespace Acme.BookStore.Web.Pages.Books
                 async () => await GetBookFromDatabaseAsync(bookId),
                 () => new DistributedCacheEntryOptions
                 {
-                    AbsoluteExpiration = DateTimeOffset.Now.AddMinutes(1)
+                    AbsoluteExpiration = DateTimeOffset.Now.AddMinutes(5)
                 }
             );
         }
@@ -84,8 +106,20 @@ namespace Acme.BookStore.Web.Pages.Books
         }
         public async Task<IActionResult> OnPostAsync()
         {
+
+          
             await _bookAppService.UpdateAsync(Id, Book);
             return NoContent();
         }
+        //private async Task<List<BookDto>> GetAllBooks()
+        //{
+        //    var requestDto = new PagedAndSortedResultRequestDto(); // You may need to customize this request object based on your needs
+        //    var list = await _bookAppService.GetListAsync(requestDto);
+        //    var sendList = new List<BookDto>();
+      
+
+
+        //    return list;
+        //}
     }
 }
